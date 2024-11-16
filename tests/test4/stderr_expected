@@ -1,0 +1,25 @@
+Error: Cannot find disk diskthatnotexist
+Error: No file system is mounted
+Error: No file system is mounted
+Error: No file system is mounted
+Command Error: input, 5
+Command Error: input, 6
+Command Error: input, 7
+Command Error: input, 10
+Error: File test does not exist
+Command Error: input, 12
+Error: test does not have block 5
+Error: Cannot find disk diskthatnotexist
+Command Error: input, 19
+Error: Directory fd3 does not exist
+Command Error: input, 27
+Command Error: input, 28
+Error: File or directory filek does not exist
+Command Error: input, 45
+Command Error: input, 46
+Command Error: input, 52
+Command Error: input, 53
+Error: File test cannot expand to size 125
+Error: Cannot allocate 125 blocks on disk
+Error: File or directory test already exists
+Error: test does not have block 3
