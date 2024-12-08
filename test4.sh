@@ -3,7 +3,7 @@ make
 
 # Create the filesystem
 ./create_fs disk1
-# ./create_fs disk2
+./create_fs disk2
 
 # Run the program and redirect stdout and stderr
 ./fs input > output.log 2> error.log

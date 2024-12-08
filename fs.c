@@ -61,7 +61,7 @@ void fs_mount(char *new_disk_name) {
     // Consistency Check 2: Valid range for start block and size for in-use files
     for (int i = 0; i < 126; i++) {
         Inode *inode = &temp_superblock.inode[i];
-        if ((inode->used_size & 0x80) && !(inode->dir_parent & 0x80)) { // In-use file inode
+        if ((inode->used_size & 0x80) && ((inode->used_size & 0x7F) > 0)) { // In-use file inode (size > 0 indicates a file)
             int size = inode->used_size & 0x7F; // Extract size
             if (inode->start_block < 1 || inode->start_block > 127 ||
                 (inode->start_block + size - 1) > 127) {
@@ -152,9 +152,6 @@ void fs_mount(char *new_disk_name) {
     current_working_dir = 127; // Root directory
 }
 
-
-
-
 void fs_create(char name[5], int size) {
     // Check if filesystem is mounted
     if (!disk_file) {
@@ -208,8 +205,6 @@ void fs_create(char name[5], int size) {
         fflush(disk_file);
         return;
     }
-
-    // Creating a file: we need to allocate `size` blocks.
 
     // Convert the free_block_list to a binary string for easy scanning
     char *strInBinary = returnBinary(superblock.free_block_list);
@@ -307,8 +302,6 @@ void fs_delete(char name[5]) {
 
 
 void fs_read(char name[5], int block_num) {
-    // printf("Reading block %d of file: %s\n", block_num, name);
-
     // Check if a file system is mounted
     if (!disk_file) {
         fprintf(stderr, "Error: No file system is mounted\n");
@@ -348,9 +341,6 @@ void fs_read(char name[5], int block_num) {
         fprintf(stderr, "Error: Failed to read block %d of file %s.\n", block_num, name);
         return;
     }
-
-    // Print or process the read data
-    // printf("Read from block %d of file %s: %.*s\n", block_num, name, 1024, block_data);
 }
 
 void fs_write(char name[5], int block_num) {
@@ -367,6 +357,7 @@ void fs_write(char name[5], int block_num) {
             break;
         }
     }
+
     if (!target_inode) {
         fprintf(stderr, "Error: File '%.*s' not found.\n", 5, name);
         return;
@@ -387,68 +378,25 @@ void fs_write(char name[5], int block_num) {
     fflush(disk_file);
 }
 
-
-
 void fs_buff(char buff[1024]) {
     memset(buffer, 0, 1024);
     memcpy(buffer, buff, 1024);
 }
 
-
-
-
-
-// void fs_ls(void) {
-//     // Calculate and print `.`
-//     int current_dir_size = calculate_directory_size(current_working_dir);
-//     printf(".       %d\n", current_dir_size);
-
-//     // Calculate and print `..`
-//     if (current_working_dir == 127) { // Root directory special case
-//         printf("..      %d\n", current_dir_size);
-//     } else {
-//         int parent_dir_inode = superblock.inode[current_working_dir].dir_parent;
-//         int parent_dir_size = calculate_directory_size(parent_dir_inode);
-//         printf("..      %d\n", parent_dir_size);
-//     }
-
-//     // Iterate over inodes to list the contents of the current directory
-//     for (int i = 0; i < 126; i++) {
-//         Inode *inode = &superblock.inode[i];
-//         if ((inode->used_size & 0x80) && inode->dir_parent == current_working_dir) {
-//             // Check if it’s a file or directory
-//             int entry_size = inode->used_size & 0x7F; // Extract size in blocks
-//             if (entry_size > 0) {
-//                 // It's a file
-//                 printf("%-5.5s %3d KB\n", inode->name, entry_size);
-//             } else {
-//                 // It's a directory
-//                 int sub_dir_size = calculate_directory_size(i);
-//                 printf("%-5.5s %3d\n", inode->name, sub_dir_size);
-//             }
-//         }
-//     }
-// }
 int calculate_directory_size(int dir_inode) {
-        // printf("DEBUG: Calculating directory size (number of entries) for inode %d\n", dir_inode);
         int entry_count = 2; // Start with 2 for '.' and '..'
-        // printf("DEBUG: Starting with 2 entries for '.' and '..'\n");
 
         for (int i = 0; i < 126; i++) {
             Inode *inode = &superblock.inode[i];
             if ((inode->used_size & 0x80) && inode->dir_parent == dir_inode) {
                 entry_count++; // Count each valid entry
-                // printf("DEBUG: Found entry '%s' (inode %d), adding to entry count\n", inode->name, i);
             }
         }
 
-        // printf("DEBUG: Total directory entries for inode %d: %d\n", dir_inode, entry_count);
         return entry_count;
 }
 
 void fs_ls(void) {
-        
-
     // Ensure a file system is mounted
     if (!disk_file) {
         fprintf(stderr, "Error: No file system is mounted\n");
@@ -481,7 +429,6 @@ void fs_ls(void) {
         }
     }
 }
-
 
 
 void fs_resize(char name[5], int new_size) {
@@ -597,7 +544,6 @@ void fs_resize(char name[5], int new_size) {
     fseek(disk_file, 0, SEEK_SET);
     fwrite(&superblock, sizeof(Superblock), 1, disk_file);
     fflush(disk_file);
-
 }
 
 void fs_defrag(void) {
@@ -675,8 +621,6 @@ void fs_defrag(void) {
     }
     fflush(disk_file);
 }
-
-
 
 void fs_cd(char name[5]) {
     // Handle special cases for "." and ".."
@@ -830,7 +774,6 @@ int main(int argc, char *argv[]) {
             char buff[1024] = {0}; // Initialize buffer with zeros
             size_t input_length = strlen(command + 2); // Calculate the length of the input
 
-            // printf("%ld input length\n", input_length); //returns 253 which is wrong? 
             // Check if the input exceeds 1024 characters
             if (input_length > 1024) {
                 fprintf(stderr, "Error: Buffer exceeds maximum size of 1024 characters.\n");
