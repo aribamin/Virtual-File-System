@@ -1,5 +1,0 @@
-M disk
-C file1 10
-L
-M disk1
-L

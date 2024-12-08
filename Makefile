@@ -15,5 +15,3 @@ fs.o: fs.c $(HEADERS)
 
 clean:
 	rm -f $(OBJS) $(TARGET)
-	rm -f stdout.txt
-	rm -f stderr.txt

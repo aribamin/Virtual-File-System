@@ -11,6 +11,13 @@ This project is a program that simulates a basic UNIX-like file system. It allow
 
 The program uses a data structure called a superblock to keep track of files, directories, and free space. Commands are read from a text file, and the program performs the operations one by one.
 
+System Calls:
+- open: Used to open the virtual disk file for reading and writing.
+- read: Reads data from the virtual disk into memory.
+- write: Writes data from memory to the virtual disk.
+- lseek: Moves the file pointer to specific positions for reading/writing.
+- close: Closes the file descriptor for the virtual disk.
+
 Superblock:
 The first block in the virtual disk.
 Keeps track of free space and stores information about all files and directories.
@@ -21,6 +28,13 @@ These store details about each file or directory, like its name, size, and locat
 Data Blocks:
 Files are stored in data blocks (chunks of 1 KB).
 Each file uses a set of continuous (next to each other) blocks.
+
+Testing:
+- Created files and directories of varying sizes to verify space allocation.
+- Deleted files and directories to ensure space is freed correctly.
+- Resized files to confirm data integrity and proper reallocation.
+- Defragmented the disk and checked that free space became continuous.
+- Simulated navigation between directories and validated paths.
 
 Commands:
 You control the file system using commands in an input file. Each line in the file is a command, like creating or deleting a file.
@@ -37,3 +51,7 @@ Features
 How to Use the Program
 Run this command to compile the program:
 make
+
+Sources:
+- Linux Manual Pages (https://man7.org/linux/man-pages/)
+- Operating System Concepts by Silberschatz, Galvin, and Gagne
