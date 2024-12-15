@@ -1,0 +1,16 @@
+Basic functionality [7/10]
+
+Mounting file system [17/20]
+
+Basic operations on files/directories [5/40]
+
+Resizing and Defragmentation [12/15]
+
+Makefile [10/10]
+
+README [5/5]
+
+Total [43/100]
+Comment: late sumbission (-20)
+
+Graded by Jialiang Yan (Email: jialian6@ualberta.ca)
