@@ -1,7 +1,5 @@
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 # Name : Arib Amin
-# SID  : 1707860
-# CCID : arib1
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
 UNIX File System Simulator
